@@ -1,0 +1,20 @@
+# Ignorar carpetas de dependencias (en cualquier subnivel)
+node_modules/
+**/node_modules/
+
+# Ignorar archivos de entorno con claves (SEGURIDAD)
+.env
+**/.env
+
+# Archivos de sistema y logs
+.DS_Store
+*.log
+npm-debug.log*
+
+# Carpeta de compilación de TypeScript
+dist/
+**/dist/
+
+# Archivos temporales subidos
+uploads/*
+!uploads/.gitkeep
