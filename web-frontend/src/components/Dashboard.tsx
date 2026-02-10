@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // <--- IMPORTANTE: Importamos Link
 import { AlertTriangle, ShieldAlert, User } from 'lucide-react';
 
 interface Alerta {
+  id: number; // <--- AÑADIDO: Necesitamos el ID para el enlace
   nombre_completo: string;
   grupo: string;
   total_activas: number;
@@ -52,46 +54,54 @@ const Dashboard = () => {
             const esGrave = porcentaje >= 100;
 
             return (
-              <div 
-                key={index} 
-                className={`bg-white p-5 rounded-xl shadow-sm border-l-4 transition-transform hover:scale-105
-                  ${esGrave ? 'border-red-500' : 'border-yellow-400'}
-                `}
+              // AQUI ESTÁ EL CAMBIO: Envolvemos todo en un Link que lleva a /alumno/ID
+              <Link 
+                to={`/alumno/${alumno.id}`} 
+                key={index}
+                className="block group" // "group" permite efectos hover en los hijos
               >
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-bold text-gray-800">{alumno.nombre_completo}</h3>
-                    <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
-                      <User size={12} />
-                      {alumno.grupo}
+                <div 
+                  className={`bg-white p-5 rounded-xl shadow-sm border-l-4 transition-all hover:scale-105 hover:shadow-md cursor-pointer
+                    ${esGrave ? 'border-red-500' : 'border-yellow-400'}
+                  `}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                        {alumno.nombre_completo}
+                      </h3>
+                      <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                        <User size={12} />
+                        {alumno.grupo}
+                      </div>
                     </div>
+                    {esGrave && (
+                      <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+                        EXPULSIÓN
+                      </span>
+                    )}
                   </div>
-                  {esGrave && (
-                    <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full animate-pulse">
-                      EXPULSIÓN
-                    </span>
-                  )}
-                </div>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>Incidencias:</span>
-                    <span className="font-bold">{alumno.total_activas} / {alumno.limite_alerta}</span>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>Incidencias:</span>
+                      <span className="font-bold">{alumno.total_activas} / {alumno.limite_alerta}</span>
+                    </div>
+                    
+                    {/* Barra de progreso */}
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div 
+                        className={`h-2.5 rounded-full ${esGrave ? 'bg-red-600' : 'bg-yellow-400'}`} 
+                        style={{ width: `${Math.min(porcentaje, 100)}%` }}
+                      ></div>
+                    </div>
+                    
+                    <p className="text-xs text-gray-400 text-right mt-1">
+                      Tipo: {alumno.tipo_incidencia}
+                    </p>
                   </div>
-                  
-                  {/* Barra de progreso */}
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div 
-                      className={`h-2.5 rounded-full ${esGrave ? 'bg-red-600' : 'bg-yellow-400'}`} 
-                      style={{ width: `${Math.min(porcentaje, 100)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <p className="text-xs text-gray-400 text-right mt-1">
-                    Tipo: {alumno.tipo_incidencia}
-                  </p>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
